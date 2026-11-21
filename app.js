@@ -12,13 +12,65 @@ function isLtrText(str) {
   return s.length > 0 && !/[\u0600-\u06FF]/.test(s);
 }
 
-// عزل أرقام التليفونات والتواريخ والمدى الرقمي داخل النصوص العربية حتى لا تنعكس في RTL
+// عزل أرقام التليفونات والتواريخ والاقتباسات الألمانية داخل النصوص العربية حتى لا تنعكس في RTL
 function formatBidiText(str) {
   const safe = escapeHtml(str);
   return safe
+    .replace(/„([^“]+)“/g, '<span class="de-quote-chip" dir="ltr">$1</span>')
     .replace(/(\+?\d{2,5}\s*[-–]\s*\d[\d\s-]*\d)/g, '<span class="de" dir="ltr">$1</span>')
     .replace(/(\b\d{2}\.\d{2}\.\d{4}\b)/g, '<span class="de" dir="ltr">$1</span>')
     .replace(/(\b\d+\s*[–-]\s*\d+\b)/g, '<span class="ltr-inline" dir="ltr">$1</span>');
+}
+
+// تنسيق سؤال الامتحان بحيث تظهر الجملة الألمانية في سطر LTR مستقل وعلامة الاستفهام مظبوطة 100%
+function formatExamPrompt(prompt, numPrefix = "") {
+  const s = String(prompt ?? "");
+  const numHtml = numPrefix ? `<span style="color:var(--primary);">${numPrefix}</span> ` : "";
+
+  // 1) نمط: نص عربي: „جملة ألماني“ (فعل اختياري)
+  const mEnd = s.match(/^(.+?):\s*„([^“]+)“\s*(\([^)]+\))?\s*$/);
+  if (mEnd) {
+    const ar = formatBidiText(mEnd[1].trim() + ":");
+    const de = escapeHtml(mEnd[2].trim());
+    const hint = mEnd[3] ? ` <span class="de-verb-hint">${escapeHtml(mEnd[3])}</span>` : "";
+    return `<div>${numHtml}${ar}</div><div class="de-prompt-box" dir="ltr">${de}${hint}</div>`;
+  }
+
+  // 2) نمط صح/غلط: نص عربي — جملة: „جملة ألماني“ صح ...؟
+  const mTF = s.match(/^(.+?)\s*—\s*جملة:\s*„([^“]+)“\s*(.+)$/);
+  if (mTF) {
+    const ar = formatBidiText(`${mTF[1].trim()} — ${mTF[3].trim()}`);
+    const de = escapeHtml(mTF[2].trim());
+    return `<div>${numHtml}${ar}</div><div class="de-prompt-box" dir="ltr">${de}</div>`;
+  }
+
+  // 3) نمط سؤال ألماني مباشر بعد الشرطة: من نفس النص — Woher kommt Sara? (سارة منين؟)
+  const mInlineQ = s.match(/^(.+?)\s*—\s*([A-Za-zÄÖÜäöüß][^(\u0600-\u06FF]*\?)\s*(\([^)]+\))?\s*$/);
+  if (mInlineQ) {
+    const ar = formatBidiText(`${mInlineQ[1].trim()}${mInlineQ[3] ? " " + mInlineQ[3].trim() : ""}:`);
+    const de = escapeHtml(mInlineQ[2].trim());
+    return `<div>${numHtml}${ar}</div><div class="de-prompt-box" dir="ltr">${de}</div>`;
+  }
+
+  // 4) نمط سؤال عن معنى جملة ألماني كاملة: إيه معنى „Was sind Sie von Beruf?“؟ أو صاحبك سألك „Liest du gern?“ ...
+  const mSent = s.match(/„([^“]*(?:\s|[?!])[^“]*)“/);
+  if (mSent && /[?!.]/.test(mSent[1])) {
+    const de = escapeHtml(mSent[1].trim());
+    const arOnly = s
+      .replace(`„${mSent[1]}“`, "الجملة دي")
+      .replace(/\s+/g, " ")
+      .trim();
+    return `<div>${numHtml}${formatBidiText(arOnly)}</div><div class="de-prompt-box" dir="ltr">${de}</div>`;
+  }
+
+  // أي سؤال تاني (مع عزل الكلمات الألمانية المفردة داخل „...“ بـ dir="ltr")
+  return `<div>${numHtml}${formatBidiText(s)}</div>`;
+}
+
+// عزل التلميحات العربية داخل جملة ألماني LTR في تمارين ملء الفراغات
+function formatLtrSegmentWithArHints(str) {
+  return escapeHtml(str)
+    .replace(/(\([^)]*[\u0600-\u06FF][^)]*\)|\[[^\]]*[\u0600-\u06FF][^\]]*\])/g, '<span class="ar-hint" dir="rtl">$1</span>');
 }
 
 function renderValueSpan(str) {
@@ -294,10 +346,10 @@ function initSplash() {
     splash.addEventListener("click", dismiss, { once: true });
   }, 500);
 
-  // نبدأ العدّاد بعد ما المتصفح يرسم الـ Splash Screen فعلياً على الشاشة
+  // نبدأ العدّاد بعد ما المتصفح يرسم الـ Splash Screen فعلياً — المدة ثانية ونص (1500ms)
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
-      setTimeout(dismiss, 1600);
+      setTimeout(dismiss, 1500);
     });
   });
 }
@@ -919,19 +971,19 @@ function renderExercises() {
     } else if (ex.type === "fill") {
       body = ex.items.map((it, idx) => {
         const allLtr = it.choices && it.choices.every(isLtrText);
+        const lineIsLtr = !/[\u0600-\u06FF]/.test(it.before);
         const control = it.choices
           ? `<select class="ex-select ${allLtr ? "de" : ""}" ${allLtr ? 'dir="ltr"' : ""} data-ex="${ex.id}" data-idx="${idx}">
               <option value="">-- اختار --</option>
               ${it.choices.map((c) => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("")}
             </select>`
-          : `<input type="text" class="ex-input-inline" data-ex="${ex.id}" data-idx="${idx}" placeholder="اكتب هنا..." autocomplete="off" />`;
+          : `<input type="text" class="ex-input-inline" dir="ltr" data-ex="${ex.id}" data-idx="${idx}" placeholder="اكتب هنا..." autocomplete="off" />`;
+        const lineHtml = lineIsLtr
+          ? `<div class="fill-line-ltr" dir="ltr"><span>${formatLtrSegmentWithArHints(it.before)}</span>${control}<span>${formatLtrSegmentWithArHints(it.after)}</span></div>`
+          : `<div style="line-height:2.2;"><span>${formatBidiText(it.before)}</span>${control}<span>${formatBidiText(it.after)}</span></div>`;
         return `
           <div class="ex-item" data-ex="${ex.id}" data-idx="${idx}">
-            <div style="line-height:2.2;">
-              <span class="de">${escapeHtml(it.before)}</span>
-              ${control}
-              <span class="de">${escapeHtml(it.after)}</span>
-            </div>
+            ${lineHtml}
             <div class="ex-feedback" id="fb-${ex.id}-${idx}"></div>
           </div>
         `;
@@ -1382,7 +1434,9 @@ function startExam(examId) {
       ${sectionHeader}
       ${passageHtml}
       <div class="exam-q-card" id="eq-${idx}">
-        <div style="font-weight:800; margin-bottom:10px;">${idx + 1}. ${formatBidiText(q.prompt)}</div>
+        <div style="font-weight:800; margin-bottom:10px;">
+          ${formatExamPrompt(q.prompt, `${idx + 1}.`)}
+        </div>
         ${audioHtml}
         <div>
           ${q.options.map((opt) => `
@@ -1520,7 +1574,7 @@ function submitExam() {
           : shown.map((d) => `
             <div class="ex-item ${d.ok ? "correct" : "wrong"}">
               <div style="font-weight:800; margin-bottom:6px;">
-                ${d.ok ? "✅" : "❌"} سؤال ${d.idx + 1} (${d.q.section}): ${formatBidiText(d.q.prompt)}
+                ${formatExamPrompt(d.q.prompt, `${d.ok ? "✅" : "❌"} سؤال ${d.idx + 1} (${d.q.section}) —`)}
                 ${d.q.audioText ? speakBtnHtml(d.q.audioText) : ""}
               </div>
               <div style="font-size:0.9rem;">إجابتك: <strong>${renderValueSpan(d.userAns)}</strong> ${d.ok ? "" : `| الإجابة الصح: <strong style="color:var(--das-color);">${renderValueSpan(d.q.answer)}</strong>`}</div>
@@ -1542,24 +1596,47 @@ function submitExam() {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-// ==================== 7. البطاقات التفاعلية والاختبار السريع ====================
+// ==================== 7. البطاقات الذكية (عارفها ولا لأ؟) والاختبار السريع ====================
 let fcDeck = [];
 let fcIndex = 0;
+let fcAutoSpeak = true;
+let fcSpeakTimer = null;
 
-function loadFlashcards() {
+function loadFlashcards(animateAndSpeak = false) {
   const mode = document.getElementById("fcUnitSelect").value;
-  if (mode === "all") fcDeck = [...VOCAB_DATA];
+  if (mode === "unlearned") fcDeck = VOCAB_DATA.filter((w) => !learnedSet.has(getVocabKey(w)));
+  else if (mode === "core_unlearned") fcDeck = VOCAB_DATA.filter((w) => w.core && !learnedSet.has(getVocabKey(w)));
+  else if (mode === "all") fcDeck = [...VOCAB_DATA];
   else if (mode === "core") fcDeck = VOCAB_DATA.filter((w) => w.core);
   else fcDeck = VOCAB_DATA.filter((w) => String(w.unit) === mode);
   fcIndex = 0;
-  renderFlashcard();
+  renderFlashcard(animateAndSpeak);
 }
 
-function renderFlashcard() {
+function renderFlashcard(animateAndSpeak = false) {
+  if (fcSpeakTimer) { clearTimeout(fcSpeakTimer); fcSpeakTimer = null; }
+  const emptyBox = document.getElementById("fcEmptyState");
+  const activeWrap = document.getElementById("fcActiveWrap");
+  if (!fcDeck.length) {
+    if (emptyBox) emptyBox.hidden = false;
+    if (activeWrap) activeWrap.hidden = true;
+    return;
+  }
+  if (emptyBox) emptyBox.hidden = true;
+  if (activeWrap) activeWrap.hidden = false;
+  if (fcIndex >= fcDeck.length) fcIndex = 0;
+
   const card = document.getElementById("flashcardEl");
+  const stage = card.closest(".flashcard-stage");
   card.classList.remove("flipped");
   const item = fcDeck[fcIndex];
-  if (!item) return;
+  const isLearned = learnedSet.has(getVocabKey(item));
+
+  const statusPill = document.getElementById("fcStatusPill");
+  if (statusPill) {
+    statusPill.textContent = isLearned ? "✅ محفوظة" : "📌 لسه بتتذاكر";
+    statusPill.className = `fc-status-pill ${isLearned ? "is-learned" : "is-new"}`;
+  }
 
   document.getElementById("fcFrontBadge").innerHTML = articleBadgeHtml(item.article, item.category);
   document.getElementById("fcGerman").textContent = item.german;
@@ -1567,11 +1644,68 @@ function renderFlashcard() {
   document.getElementById("fcEgyptian").textContent = item.egyptian;
   document.getElementById("fcExample").textContent = item.example || "";
   document.getElementById("fcRef").textContent = `الوحدة ${item.unit} · ${item.category}`;
-  document.getElementById("fcCounter").textContent = `كارت ${fcIndex + 1} من ${fcDeck.length}`;
+
+  const unlearnedTotal = VOCAB_DATA.length - learnedSet.size;
+  document.getElementById("fcCounter").innerHTML = `
+    <span>كارت ${fcIndex + 1} من ${fcDeck.length} · متبقي ${unlearnedTotal} كلمة غير محفوظة</span>
+    <button type="button" id="fcAutoSpeakToggle" class="learn-btn ${fcAutoSpeak ? "done" : ""}" style="margin-right:8px;">
+      ${fcAutoSpeak ? "🔊 نطق تلقائي: شغّال" : "🔇 نطق تلقائي: مقفول"}
+    </button>
+  `;
+  const autoBtn = document.getElementById("fcAutoSpeakToggle");
+  if (autoBtn) {
+    autoBtn.addEventListener("click", () => {
+      fcAutoSpeak = !fcAutoSpeak;
+      renderFlashcard(false);
+    });
+  }
+
+  if (animateAndSpeak) {
+    if (stage) {
+      stage.classList.remove("fc-enter");
+      void stage.offsetWidth; // force reflow لإعادة تشغيل الأنيميشن بنعومة
+      stage.classList.add("fc-enter");
+    }
+    if (fcAutoSpeak) {
+      const spkBtn = document.getElementById("fcSpeakBtn");
+      fcSpeakTimer = setTimeout(() => {
+        speakGerman(getFullSpeakText(item), spkBtn);
+      }, 150);
+    }
+  }
+}
+
+function markFlashcardAnswer(knewIt) {
+  const item = fcDeck[fcIndex];
+  if (!item) return;
+  const key = getVocabKey(item);
+  const mode = document.getElementById("fcUnitSelect").value;
+
+  if (knewIt) {
+    learnedSet.add(key);
+    saveLearned();
+    renderVocabGrid();
+    if (mode === "unlearned" || mode === "core_unlearned") {
+      fcDeck.splice(fcIndex, 1);
+      if (fcDeck.length === 0) launchConfetti();
+      if (fcIndex >= fcDeck.length) fcIndex = 0;
+    } else {
+      fcIndex = (fcIndex + 1) % fcDeck.length;
+    }
+  } else {
+    learnedSet.delete(key);
+    saveLearned();
+    renderVocabGrid();
+    // نسيبها في قائمة اللي مش محفوظة وننتقل للكارت اللي بعده عادي بدون إعادة
+    if (fcDeck.length > 0) {
+      fcIndex = (fcIndex + 1) % fcDeck.length;
+    }
+  }
+  renderFlashcard(true);
 }
 
 function initFlashcards() {
-  document.getElementById("fcUnitSelect").addEventListener("change", loadFlashcards);
+  document.getElementById("fcUnitSelect").addEventListener("change", () => loadFlashcards(true));
   document.getElementById("flashcardEl").addEventListener("click", (e) => {
     if (e.target.closest("#fcSpeakBtn")) return;
     document.getElementById("flashcardEl").classList.toggle("flipped");
@@ -1580,24 +1714,32 @@ function initFlashcards() {
     document.getElementById("flashcardEl").classList.toggle("flipped");
   });
   document.getElementById("fcNextBtn").addEventListener("click", () => {
+    if (!fcDeck.length) return;
     fcIndex = (fcIndex + 1) % fcDeck.length;
-    renderFlashcard();
+    renderFlashcard(true);
   });
   document.getElementById("fcPrevBtn").addEventListener("click", () => {
+    if (!fcDeck.length) return;
     fcIndex = (fcIndex - 1 + fcDeck.length) % fcDeck.length;
-    renderFlashcard();
+    renderFlashcard(true);
   });
   document.getElementById("fcShuffleBtn").addEventListener("click", () => {
     fcDeck.sort(() => Math.random() - 0.5);
     fcIndex = 0;
-    renderFlashcard();
+    renderFlashcard(true);
   });
   document.getElementById("fcSpeakBtn").addEventListener("click", (e) => {
     e.stopPropagation();
     const item = fcDeck[fcIndex];
     if (item) speakGerman(getFullSpeakText(item), e.currentTarget);
   });
-  loadFlashcards();
+  document.getElementById("fcKnowYesBtn").addEventListener("click", () => markFlashcardAnswer(true));
+  document.getElementById("fcKnowNoBtn").addEventListener("click", () => markFlashcardAnswer(false));
+  document.getElementById("fcReviewAllBtn").addEventListener("click", () => {
+    document.getElementById("fcUnitSelect").value = "all";
+    loadFlashcards(true);
+  });
+  loadFlashcards(false);
 }
 
 let quizQuestions = [];
@@ -1711,6 +1853,7 @@ document.addEventListener("click", (e) => {
     else learnedSet.add(key);
     saveLearned();
     renderVocabGrid();
+    loadFlashcards();
   }
 });
 
