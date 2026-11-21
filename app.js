@@ -449,7 +449,7 @@ function renderGrammarU1() {
       <div class="compare-box">
         <h4>📌 1. سؤال أداة الاستفهام (W-Frage) — الفعل رقم 2</h4>
         <div class="table-wrap">
-          <table>
+          <table class="ltr-table" dir="ltr">
             <thead><tr><th>1. أداة الاستفهام</th><th>2. الفعل</th><th>3. باقي الجملة</th></tr></thead>
             <tbody>
               <tr><td class="de">Wer</td><td class="de hl-red">bist</td><td class="de">du?</td></tr>
@@ -464,7 +464,7 @@ function renderGrammarU1() {
       <div class="compare-box">
         <h4>📌 2. الجملة الخبرية (Aussagesatz) — الفعل رقم 2</h4>
         <div class="table-wrap">
-          <table>
+          <table class="ltr-table" dir="ltr">
             <thead><tr><th>1. الفاعل</th><th>2. الفعل</th><th>3. باقي الجملة</th></tr></thead>
             <tbody>
               <tr><td class="de">Ich</td><td class="de hl-red">bin</td><td class="de">Julia.</td></tr>
@@ -480,7 +480,7 @@ function renderGrammarU1() {
 
     <h4 style="margin:18px 0 8px;">📌 3. تصريف الأفعال الأساسية في الوحدة الأولى</h4>
     <div class="table-wrap">
-      <table>
+      <table class="ltr-table" dir="ltr">
         <thead>
           <tr><th>الضمير</th><th>sein (يكون — شاذ)</th><th>heißen (يُسمى)</th><th>kommen (يأتي)</th><th>wohnen (يسكن)</th><th>sprechen (يتكلم — شاذ)</th></tr>
         </thead>
@@ -623,7 +623,7 @@ function renderGrammarU2() {
   return `
     <h4>📌 1. تصريف الأفعال لكل الضمائر (المنتظم + الشاذ + sein &amp; haben)</h4>
     <div class="table-wrap">
-      <table>
+      <table class="ltr-table" dir="ltr">
         <thead>
           <tr><th>الضمير</th><th>kochen (منتظم)</th><th>arbeiten (آخره t)</th><th>lesen (e→ie)</th><th>sprechen (e→i)</th><th>fahren (a→ä)</th><th>sein (يكون)</th><th>haben (عنده)</th></tr>
         </thead>
@@ -647,7 +647,7 @@ function renderGrammarU2() {
         <h4>📌 2. سؤال هل (Ja-/Nein-Frage)</h4>
         <p style="margin-top:0;">مفيش أداة استفهام! بنحط <strong>الفعل رقم (1)</strong> في أول الجملة مباشرة:</p>
         <div class="table-wrap">
-          <table>
+          <table class="ltr-table" dir="ltr">
             <thead><tr><th>1. الفعل</th><th>2. الفاعل</th><th>3. باقي الجملة</th></tr></thead>
             <tbody>
               <tr><td class="de hl-red">Gehen</td><td class="de">wir</td><td class="de">ins Kino?</td></tr>
@@ -670,14 +670,14 @@ function renderGrammarU2() {
     <h4 style="margin:18px 0 8px;">📌 4. المفرد والجمع (Singular &amp; Plural)</h4>
     <p style="margin-top:0; color:var(--text-muted);">في الألماني كل الأسماء في الجمع بتاخد أداة واحدة بس هي <span class="art-badge art-pl">die</span>، ودي الـ 5 نهايات الأساسية للجمع:</p>
     <div class="table-wrap">
-      <table>
+      <table class="ltr-table" dir="ltr">
         <thead><tr><th>نهاية الجمع</th><th>المفرد (Singular)</th><th>الجمع (Plural)</th><th>المعنى بالعامية</th></tr></thead>
         <tbody>
-          <tr><td class="de hl-red">(¨)-</td><td class="de">der Kilometer</td><td class="de">die Kilometer</td><td>كيلومتر ← كيلومترات (بدون تغيير)</td></tr>
-          <tr><td class="de hl-red">-(e)n</td><td class="de">die Stunde</td><td class="de">die Stunden</td><td>ساعة ← ساعات</td></tr>
-          <tr><td class="de hl-red">(¨)-e</td><td class="de">der Tag / der Arzt</td><td class="de">die Tage / die Ärzte</td><td>يوم ← أيام / دكتور ← دكاترة</td></tr>
-          <tr><td class="de hl-red">(¨)-er</td><td class="de">das Buch</td><td class="de">die Bücher</td><td>كتاب ← كتب</td></tr>
-          <tr><td class="de hl-red">-s</td><td class="de">das Auto / das Restaurant</td><td class="de">die Autos / die Restaurants</td><td>عربية ← عربيات / مطعم ← مطاعم</td></tr>
+          <tr><td class="de hl-red">(¨)-</td><td class="de">der Kilometer</td><td class="de">die Kilometer</td><td dir="rtl">كيلومتر ← كيلومترات (بدون تغيير)</td></tr>
+          <tr><td class="de hl-red">-(e)n</td><td class="de">die Stunde</td><td class="de">die Stunden</td><td dir="rtl">ساعة ← ساعات</td></tr>
+          <tr><td class="de hl-red">(¨)-e</td><td class="de">der Tag / der Arzt</td><td class="de">die Tage / die Ärzte</td><td dir="rtl">يوم ← أيام / دكتور ← دكاترة</td></tr>
+          <tr><td class="de hl-red">(¨)-er</td><td class="de">das Buch</td><td class="de">die Bücher</td><td dir="rtl">كتاب ← كتب</td></tr>
+          <tr><td class="de hl-red">-s</td><td class="de">das Auto / das Restaurant</td><td class="de">die Autos / die Restaurants</td><td dir="rtl">عربية ← عربيات / مطعم ← مطاعم</td></tr>
         </tbody>
       </table>
     </div>
@@ -690,13 +690,15 @@ function renderU2NumbersConverter() {
       <strong>🧮 محوّل الأرقام الألماني التفاعلي (جرّب بنفسك!)</strong>
       <div style="font-size:0.88rem; color:var(--text-muted);">اكتب أي رقم من 0 لـ 999,999 وهيتكتبلك ويتنطقلك بالألماني فوراً:</div>
       <div class="converter-row">
-        <input type="number" id="numConvInput" class="input-field" min="0" max="999999" value="45" style="width:180px; font-weight:800;" />
+        <input type="number" id="numConvInput" class="input-field de" dir="ltr" min="0" max="999999" value="45" style="width:180px; font-weight:800;" />
         <button type="button" class="btn btn-primary" id="numConvSpeak">🔊 اسمع الرقم</button>
-        <button type="button" class="btn btn-secondary" data-preset="21">21</button>
-        <button type="button" class="btn btn-secondary" data-preset="45">45</button>
-        <button type="button" class="btn btn-secondary" data-preset="480">480</button>
-        <button type="button" class="btn btn-secondary" data-preset="1250">1250</button>
-        <button type="button" class="btn btn-secondary" data-preset="68000">68000</button>
+        <div style="display:inline-flex; gap:8px; flex-wrap:wrap; direction:ltr;">
+          <button type="button" class="btn btn-secondary" data-preset="21">21</button>
+          <button type="button" class="btn btn-secondary" data-preset="45">45</button>
+          <button type="button" class="btn btn-secondary" data-preset="480">480</button>
+          <button type="button" class="btn btn-secondary" data-preset="1250">1250</button>
+          <button type="button" class="btn btn-secondary" data-preset="68000">68000</button>
+        </div>
       </div>
       <div class="converter-output" id="numConvOut">fünfundvierzig</div>
     </div>
@@ -1003,7 +1005,7 @@ function renderExercises() {
     } else if (ex.type === "verb-table") {
       body = `
         <div class="table-wrap">
-          <table>
+          <table class="ltr-table" dir="ltr">
             <thead><tr>${ex.headers.map((h) => `<th>${escapeHtml(h)}</th>`).join("")}</tr></thead>
             <tbody>
               ${ex.rows.map((r, rIdx) => `
@@ -1055,7 +1057,7 @@ function renderExercises() {
     } else if (ex.type === "club-form") {
       body = `
         <div class="table-wrap">
-          <table>
+          <table class="ltr-table" dir="ltr">
             <thead><tr><th>الكورس (Kurs)</th><th>اليوم (Tag)</th><th>الوقت (Uhrzeit)</th></tr></thead>
             <tbody>
               <tr><td class="de">Basketball</td><td class="de">Dienstag und Donnerstag</td><td class="de">19–21 Uhr</td></tr>
