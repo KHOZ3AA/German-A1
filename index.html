@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Netzwerk neu A1 — الدليل التفاعلي الشامل بالعامية المصرية</title>
+  <meta name="description" content="الدليل التفاعلي الشامل لكتاب Netzwerk neu A1 (الشرح بالعامية المصرية + القاموس الصوتي بنطق ألماني أصلي + تمارين الـ Kursbuch والـ Übungsbuch + مركز الامتحانات التقييمية). Created by Eng. Seif Al-Deen." />
+  <meta name="theme-color" content="#c8102e" />
+
+  <!-- أيقونة الصفحة + إعدادات التثبيت PWA (أندرويد وآيفون) -->
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192.png" />
+  <link rel="apple-touch-icon" sizes="512x512" href="icons/icon-512.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Netzwerk A1" />
+  <meta name="mobile-web-app-capable" content="yes" />
+
+  <!-- Open Graph / WhatsApp / Social Preview -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://seif-cyber.github.io/german-A1/" />
+  <meta property="og:title" content="🇩🇪 Netzwerk neu A1 — الدليل التفاعلي الشامل بالعامية المصرية" />
+  <meta property="og:description" content="شرح مبسط بالعامية المصرية، قاموس صوتي بأكسنت ألماني أصلي، تمارين الـ Kursbuch والـ Übungsbuch، وامتحانات تقييمية — Created by Eng. Seif Al-Deen" />
+  <meta property="og:image" content="https://seif-cyber.github.io/german-A1/og-preview.jpg" />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="675" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="🇩🇪 Netzwerk neu A1 — Interactive Study Guide" />
+  <meta name="twitter:description" content="شرح بالعامية المصرية، قاموس صوتي ألماني أصلي، تمارين الكتابين، وامتحانات تقييمية — Created by Eng. Seif Al-Deen" />
+  <meta name="twitter:image" content="https://seif-cyber.github.io/german-A1/og-preview.jpg" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- خلفية هادئة متحركة -->
+  <div class="ambient-bg" aria-hidden="true">
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
+    <div class="ambient-orb orb-3"></div>
+  </div>
+
+  <!-- كانفاس الاحتفال بالنتائج العالية -->
+  <canvas id="confettiCanvas"></canvas>
+
+  <!-- تايمر الامتحان العائم أسفل اليسار -->
+  <div id="floatingExamTimer" class="floating-exam-timer" role="timer" aria-live="polite" hidden>
+    <span class="ft-time" id="ftTimeDisp">20:00</span>
+    <span class="ft-sep">|</span>
+    <span class="ft-prog" id="ftProgDisp">0/25</span>
+  </div>
+
+  <!-- شاشة التحميل الاحترافية بلوجو الكتاب -->
+  <div id="splashScreen" class="splash-screen" role="status" aria-label="جاري تحميل التطبيق">
+    <div class="splash-card">
+      <svg class="splash-logo-svg" viewBox="0 0 360 155" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Netzwerk neu A1 Logo">
+        <defs>
+          <linearGradient id="nwRed" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#e11d48" />
+            <stop offset="100%" stop-color="#9f1239" />
+          </linearGradient>
+          <linearGradient id="nwStripe" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#fbbf24" />
+            <stop offset="50%" stop-color="#f97316" />
+            <stop offset="100%" stop-color="#ef4444" />
+          </linearGradient>
+        </defs>
+        <rect x="10" y="10" width="340" height="4" rx="2" fill="url(#nwStripe)" />
+        <rect x="10" y="18" width="290" height="2.5" rx="1.25" fill="#fde047" opacity="0.85" />
+        <rect x="10" y="28" width="340" height="72" rx="14" fill="url(#nwRed)" />
+        <text x="180" y="75" text-anchor="middle" fill="#ffffff" font-family="Plus Jakarta Sans, Segoe UI, sans-serif" font-size="38" font-weight="800" letter-spacing="-0.5">Netzwerk neu</text>
+        <rect x="10" y="108" width="340" height="36" rx="10" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.28)" />
+        <text x="64" y="133" text-anchor="middle" fill="#fde047" font-family="Plus Jakarta Sans, Segoe UI, sans-serif" font-size="22" font-weight="800">A1</text>
+        <line x1="100" y1="115" x2="100" y2="137" stroke="rgba(255,255,255,0.38)" stroke-width="2" />
+        <text x="225" y="131" text-anchor="middle" fill="#ffffff" font-family="Plus Jakarta Sans, Segoe UI, sans-serif" font-size="14" font-weight="700">Kurs- &amp; Übungsbuch • Interactive Guide</text>
+      </svg>
+      <div class="splash-subtitle">جاري تجهيز الشرح والصوت الألماني الأصلي والامتحانات...</div>
+      <div class="splash-progress-track">
+        <div class="splash-progress-fill"></div>
+      </div>
+    </div>
+    <div class="splash-credit">Created with ❤️ by Eng. Seif Al-Deen</div>
+  </div>
+
+  <!-- الهيدر الرئيسي -->
+  <header class="hero-header">
+    <div class="container">
+      <div class="hero-top">
+        <div>
+          <div class="brand-row">
+            <span class="brand-badge">🇩🇪 Netzwerk neu A1 — Kurs- &amp; Übungsbuch</span>
+            <span class="brand-badge">🎧 صوت ألماني أصلي نقي</span>
+          </div>
+          <h1>دليلك التفاعلي الشامل لتعلّم الألماني بالعامية المصرية</h1>
+          <p class="hero-subtitle">
+            شرح مبسط، ملخصات سريعة، قاموس شامل بنطق ألماني أصلي، كل تمارين كتاب الشرح وكتاب التمارين، ومركز امتحانات تقييمية على نمط جوته.
+          </p>
+        </div>
+        <div class="hero-actions">
+          <button class="icon-btn install-cta-btn" id="headerInstallBtn" type="button" title="ثبّت التطبيق على موبايلك أو جهازك">📲 تثبيت التطبيق</button>
+          <button class="icon-btn" id="speedToggle" type="button" title="التحكم في سرعة نطق الصوت الألماني">▶️ النطق: طبيعي (1.0x)</button>
+          <button class="icon-btn" id="themeToggle" type="button" title="تغيير المظهر">🌙 الوضع الليلي</button>
+        </div>
+      </div>
+
+      <div class="hero-bottom-row">
+        <div class="hero-stats-col">
+          <div class="stats-strip">
+            <div class="stat-pill">🗂️ الكلمات: <strong id="statTotalWords">0</strong></div>
+            <div class="stat-pill">✅ حفظت: <strong id="statLearnedWords">0</strong></div>
+            <div class="stat-pill">✍️ التدريبات: <strong id="statTotalExercises">0</strong></div>
+            <div class="stat-pill">🎓 الامتحانات: <strong id="statTotalExams">3</strong></div>
+          </div>
+          <div class="hero-progress-wrap">
+            <div class="hero-progress-track">
+              <div class="hero-progress-fill" id="heroProgressFill"></div>
+            </div>
+          </div>
+        </div>
+
+        <a href="https://seifhossam.com" target="_blank" rel="noopener noreferrer" class="header-credit" title="زيارة موقع م. سيف الدين">
+          Created with ❤️ by Eng. Seif Al-Deen
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- شريط التنقل الزجاجي -->
+  <div class="nav-wrapper">
+    <div class="container">
+      <nav class="tabs-nav" role="tablist" aria-label="أقسام المذاكرة">
+        <button class="tab-btn active" data-tab="summary" role="tab">⚡ الملخص</button>
+        <button class="tab-btn" data-tab="unit1" role="tab">1️⃣ الوحدة الأولى</button>
+        <button class="tab-btn" data-tab="unit2" role="tab">2️⃣ الوحدة التانية</button>
+        <button class="tab-btn" data-tab="vocab" role="tab">📚 القاموس</button>
+        <button class="tab-btn" data-tab="exercises" role="tab">✍️ التدريبات</button>
+        <button class="tab-btn" data-tab="exams" role="tab">🎓 الامتحانات</button>
+        <button class="tab-btn" data-tab="practice" role="tab">🃏 بطاقات واختبار</button>
+      </nav>
+    </div>
+  </div>
+
+  <!-- المحتوى الرئيسي -->
+  <main class="container">
+
+    <!-- رسالة تثبيت التطبيق على الموبايل (آيفون وأندرويد) -->
+    <div id="installBanner" class="install-banner" role="region" aria-label="تثبيت التطبيق" hidden>
+      <div class="install-banner-content">
+        <img src="icons/icon-192.png" alt="Netzwerk A1" class="install-banner-icon" />
+        <div>
+          <strong class="install-banner-title">📲 ثبّت التطبيق على موبايلك (آيفون أو أندرويد)</strong>
+          <div class="install-banner-text" id="installBannerText">
+            عشان تفتحه زي أي تطبيق بسرعة، وتقدّمك في حفظ الكلمات ودرجات امتحاناتك تتحفظ دايماً على موبايلك!
+          </div>
+        </div>
+      </div>
+      <div class="install-banner-actions">
+        <button type="button" class="btn btn-primary" id="bannerInstallBtn">📲 تثبيت الآن</button>
+        <button type="button" class="btn btn-secondary" id="bannerDismissBtn" aria-label="إغلاق">لاحقاً</button>
+      </div>
+    </div>
+
+    <!-- 1. الملخص -->
+    <section id="tab-summary" class="tab-panel active">
+      <div class="legend-bar">
+        <strong>🎨 دليل ألوان الأدوات:</strong>
+        <span class="art-badge art-der">der = مذكر (أزرق)</span>
+        <span class="art-badge art-das">das = محايد (أخضر)</span>
+        <span class="art-badge art-die">die = مؤنث (أحمر)</span>
+        <span class="art-badge art-pl">die (Pl.) = جمع (بنفسجي)</span>
+        <span class="art-badge art-verb">Verb = فعل</span>
+        <span>🔊 كل زراير الصوت بأكسنت ألماني أصلي (وجرب سرعة 0.75x للسماع بالراحة!).</span>
+      </div>
+      <div id="summaryMount"></div>
+    </section>
+
+    <!-- 2. الوحدة الأولى -->
+    <section id="tab-unit1" class="tab-panel">
+      <div id="unit1Mount"></div>
+    </section>
+
+    <!-- 3. الوحدة التانية -->
+    <section id="tab-unit2" class="tab-panel">
+      <div id="unit2Mount"></div>
+    </section>
+
+    <!-- 4. القاموس -->
+    <section id="tab-vocab" class="tab-panel">
+      <div class="unit-banner">
+        <h2>📚 قاموس الكتاب الكامل (ألماني ← عامية مصرية)</h2>
+        <p>كل كلمات الوحدات المتاحة من كتاب الشرح (Kursbuch) وكتاب التمارين (Übungsbuch) بالأداة والجمع والنطق الألماني الأصلي.</p>
+      </div>
+
+      <div class="card">
+        <div class="vocab-controls">
+          <input type="search" id="vocabSearch" class="input-field" placeholder="🔍 ابحث بالألماني أو بالعامية (مثلاً: Arzt أو دكتور أو فوطة)..." />
+          <select id="vocabUnitFilter" aria-label="تصفية بالوحدة">
+            <option value="all">كل الوحدات المتاحة</option>
+            <option value="1">الوحدة الأولى (Kapitel 1)</option>
+            <option value="2">الوحدة التانية (Kapitel 2)</option>
+          </select>
+          <select id="vocabCatFilter" aria-label="تصفية بالقسم">
+            <option value="all">كل الأقسام والمواضيع</option>
+          </select>
+          <select id="vocabArtFilter" aria-label="تصفية بالأداة">
+            <option value="all">كل الأنواع والأدوات</option>
+            <option value="der">مذكر (der)</option>
+            <option value="das">محايد (das)</option>
+            <option value="die">مؤنث (die)</option>
+            <option value="pl">جمع (die Pl.)</option>
+            <option value="verb">أفعال (Verben)</option>
+            <option value="other">تعبيرات وصفات وأرقام</option>
+          </select>
+        </div>
+
+        <div class="vocab-toggles">
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button type="button" class="chip-toggle" id="coreOnlyToggle">⭐ كلمات امتحان Start Deutsch 1 فقط</button>
+            <button type="button" class="chip-toggle" id="unlearnedToggle">📌 اللي لسه محفظتهاش فقط</button>
+          </div>
+          <div id="vocabCountLabel" style="font-weight:700; color:var(--text-muted);"></div>
+        </div>
+
+        <div class="vocab-grid" id="vocabGrid"></div>
+      </div>
+    </section>
+
+    <!-- 5. التدريبات (Kursbuch + Übungsbuch) -->
+    <section id="tab-exercises" class="tab-panel">
+      <div class="unit-banner">
+        <h2>✍️ التدريبات التفاعلية (كتاب الشرح + كتاب التمارين)</h2>
+        <p>كل تمارين <strong>Kursbuch</strong> و <strong>Übungsbuch</strong> للوحدات المتاحة قابلة للحل مباشرة مع تصحيح فوري وشرح كل إجابة بالعامية المصرية!</p>
+      </div>
+
+      <div class="ex-filter-panel">
+        <div class="ex-filter-group">
+          <strong>📘 الكتاب:</strong>
+          <button class="btn btn-primary ex-src-btn" data-exsrc="all">الكل</button>
+          <button class="btn btn-secondary ex-src-btn" data-exsrc="ub">كتاب التمارين (Übungsbuch)</button>
+          <button class="btn btn-secondary ex-src-btn" data-exsrc="kb">كتاب الشرح (Kursbuch)</button>
+        </div>
+        <div class="ex-filter-group">
+          <strong>📂 الوحدة:</strong>
+          <button class="btn btn-primary ex-unit-btn" data-exunit="all">كل الوحدات</button>
+          <button class="btn btn-secondary ex-unit-btn" data-exunit="1">الوحدة 1</button>
+          <button class="btn btn-secondary ex-unit-btn" data-exunit="2">الوحدة 2</button>
+        </div>
+      </div>
+
+      <div id="exercisesMount"></div>
+    </section>
+
+    <!-- 6. مركز الامتحانات التقييمية -->
+    <section id="tab-exams" class="tab-panel">
+      <div class="unit-banner">
+        <h2>🎓 مركز الامتحانات التقييمية (Start Deutsch 1 / Kapiteltests)</h2>
+        <p>اختبر مستواك الحقيقي بامتحانات متكاملة (استماع بالصوت الألماني الأصلي + قراءة + قواعد وأدوات + مواقف وكلمات) مع مؤقت اختياري وتقرير مفصل بنقاط قوتك وضعفك ومراجعة الأخطاء.</p>
+      </div>
+      <div id="examsMount"></div>
+    </section>
+
+    <!-- 7. البطاقات والاختبار السريع -->
+    <section id="tab-practice" class="tab-panel">
+      <div class="grid-2">
+        <div class="card">
+          <div class="section-header">
+            <h3>🃏 بطاقات الحفظ (Flashcards)</h3>
+            <select id="fcUnitSelect" aria-label="اختر وحدة للبطاقات">
+              <option value="all">كل الوحدات المتاحة</option>
+              <option value="1">الوحدة 1 فقط</option>
+              <option value="2">الوحدة 2 فقط</option>
+              <option value="core">كلمات الامتحان الأساسية ⭐</option>
+            </select>
+          </div>
+          <p style="margin-top:0; color:var(--text-muted); font-size:0.92rem;">اضغط على الكارت عشان تقلبه وتشوف المعنى بالعامية المصرية!</p>
+
+          <div class="flashcard-stage">
+            <div class="flashcard" id="flashcardEl">
+              <div class="fc-face fc-front">
+                <div id="fcFrontBadge"></div>
+                <div class="fc-main-word" id="fcGerman">...</div>
+                <div id="fcPlural" style="color:var(--text-muted); font-family:'Plus Jakarta Sans',sans-serif;"></div>
+                <button type="button" class="btn btn-secondary" id="fcSpeakBtn" style="margin-top:6px;">🔊 اسمع النطق الأصلي</button>
+              </div>
+              <div class="fc-face fc-back">
+                <div style="font-size:0.85rem; color:var(--primary); font-weight:800;">المعنى بالعامية المصرية</div>
+                <div style="font-size:1.45rem; font-weight:800;" id="fcEgyptian">...</div>
+                <div id="fcExample" style="font-size:0.9rem; color:var(--text-muted);"></div>
+                <div id="fcRef" style="font-size:0.8rem; color:var(--text-muted);"></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap; margin-top:14px;">
+            <button type="button" class="btn btn-secondary" id="fcPrevBtn">⬅️ السابق</button>
+            <button type="button" class="btn btn-primary" id="fcFlipBtn">🔄 اقلب الكارت</button>
+            <button type="button" class="btn btn-secondary" id="fcNextBtn">التالي ➡️</button>
+            <button type="button" class="btn btn-secondary" id="fcShuffleBtn">🔀 لخبط الكروت</button>
+          </div>
+          <div id="fcCounter" style="text-align:center; margin-top:10px; font-weight:700; color:var(--text-muted);"></div>
+        </div>
+
+        <div class="card">
+          <div class="section-header">
+            <h3>🎯 تدريب سريع (10 أسئلة عشوائية)</h3>
+            <select id="quizTypeSelect" aria-label="نوع الاختبار">
+              <option value="mixed">شامل (معاني + أدوات)</option>
+              <option value="meaning">معاني الكلمات بالعامية</option>
+              <option value="article">اختبار الأدوات (der / das / die)</option>
+            </select>
+          </div>
+          <div id="quizArea"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- نافذة خطوات التثبيت للآيفون والأندرويد -->
+  <div id="installModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="installModalTitle" hidden>
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="installModalTitle" style="margin:0;">📲 تثبيت تطبيق Netzwerk A1 على موبايلك</h3>
+        <button type="button" class="modal-close-btn" id="closeInstallModal" aria-label="إغلاق">✕</button>
+      </div>
+      <p style="margin:6px 0 14px; color:var(--text-muted); font-size:0.92rem;">
+        لما تثبّت التطبيق على الشاشة الرئيسية، بيفتح بشاشة كاملة بدون شريط المتصفح، وكمان <strong>تقدّمك في حفظ الكلمات ودرجاتك بتفضل محفوظة على موبايلك</strong> وتقدر تذاكر بسرعة في أي وقت!
+      </p>
+
+      <div class="install-os-tabs">
+        <button type="button" class="btn btn-primary" id="osTabIos">🍎 آيفون / iPad</button>
+        <button type="button" class="btn btn-secondary" id="osTabAndroid">🤖 أندرويد / Chrome</button>
+      </div>
+
+      <div id="installStepsIos" class="install-steps-box">
+        <ol class="install-steps-list">
+          <li>لو فاتح الرابط من جوه <strong>واتساب</strong>، اضغط الأول على أيقونة البوصلة <strong>Safari 🧭</strong> تحت عشان يفتح في سفاري.</li>
+          <li>في متصفح <strong>Safari</strong>، اضغط على زرار المشاركة <strong>Share ⬆️</strong> (المربع اللي طالع منه سهم في الشريط تحت).</li>
+          <li>انزل شوية في القائمة واختار <strong>«إضافة إلى الشاشة الرئيسية» (Add to Home Screen ➕)</strong>.</li>
+          <li>اضغط <strong>«إضافة» (Add)</strong> فوق — وهتلاقي أيقونة <strong>Netzwerk A1</strong> نزلت على شاشة موبايلك!</li>
+        </ol>
+      </div>
+
+      <div id="installStepsAndroid" class="install-steps-box" hidden>
+        <div id="nativeInstallWrap" style="margin-bottom:12px;" hidden>
+          <button type="button" class="btn btn-primary" id="modalNativeInstallBtn" style="width:100%; justify-content:center; padding:12px;">
+            ⚡ تثبيت التطبيق بضغطة واحدة الآن
+          </button>
+        </div>
+        <ol class="install-steps-list">
+          <li>افتح الرابط في متصفح <strong>Google Chrome</strong> أو <strong>Edge</strong>.</li>
+          <li>اضغط على التلات نقط <strong>⋮</strong> (القائمة فوق على اليمين أو الشمال).</li>
+          <li>اختار <strong>«تثبيت التطبيق» (Install app)</strong> أو <strong>«إضافة إلى الشاشة الرئيسية» (Add to Home screen)</strong>.</li>
+          <li>اضغط <strong>«تثبيت» (Install)</strong> وهينزل التطبيق فوراً على موبايلك!</li>
+        </ol>
+      </div>
+
+      <div class="callout info" style="margin:12px 0 0; font-size:0.86rem;">
+        <strong>💡 ملحوظة مهمة لحفظ التقدّم:</strong>
+        كل الكلمات اللي بتدوس عليها <strong>«حفظتها ✅»</strong> ودرجات امتحاناتك بتتحفظ تلقائياً في ذاكرة التطبيق على موبايلك (بدون حساب أو تسجيل دخول!).
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container footer-inner">
+      <div>دليل تفاعلي لكتابي <strong>Netzwerk neu A1 (Kursbuch &amp; Übungsbuch)</strong> — بالعامية المصرية 🇩🇪🇪🇬</div>
+      <a href="https://seifhossam.com" target="_blank" rel="noopener noreferrer" class="creator-credit">Created with ❤️ by Eng. Seif Al-Deen</a>
+    </div>
+  </footer>
+
+  <script src="audio-manifest.js"></script>
+  <script src="data-vocab.js"></script>
+  <script src="data-units.js"></script>
+  <script src="data-exercises.js"></script>
+  <script src="data-exercises-ub.js"></script>
+  <script src="data-exams.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
